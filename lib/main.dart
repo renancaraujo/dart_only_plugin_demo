@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late final TextEditingController controller = TextEditingController();
 
-  late final pasteboard = Pasteboard.general;
+  late final pasteboard = PasteboardMacos.general;
 
   @override
   void initState() {
