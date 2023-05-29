@@ -1,54 +1,67 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
+import 'package:pasteboard_interface/pasteboard_interface.dart';
+import 'package:pasteboard_windows/pasteboard_windows.dart';
 import 'package:win32/win32.dart';
 
-void main2() {
-  if (OpenClipboard(NULL) != 0) {
-    if (IsClipboardFormatAvailable(CF_TEXT) != 0) {
-      final hData = GetClipboardData(CF_TEXT);
-      if (hData != NULL) {
-        final lpData = GlobalLock(Pointer.fromAddress(hData));
-        if (lpData != nullptr) {
-          final text = lpData.cast<Utf8>().toDartString();
-          print('Clipboard Text: $text');
-          GlobalUnlock(Pointer.fromAddress(hData));
-        }
-      }
+class PasteboardWindows implements PasteboardInterface {
+  bool writeStringForFormat(String string, Format format) {
+    final hGlobal = GlobalAlloc(
+      0x0002 /* GMEM_MOVEABLE */,
+      string.length * 2 + 2,
+    );
+
+    final lpData = GlobalLock(hGlobal).cast<Utf16>();
+    if (lpData == nullptr) {
+      return false;
     }
 
-    CloseClipboard();
-  }
-}
+    lpData.setString(string);
 
-void main() {
-  final user32 = DynamicLibrary.open('user32.dll');
+    GlobalUnlock(hGlobal);
 
-  final textToCopy = 'Hello, clipboard!';
+    if (OpenClipboard(NULL) != 0) {
+      EmptyClipboard();
+      SetClipboardData(format.value, hGlobal.address);
+      CloseClipboard();
+    }
 
+    GlobalFree(hGlobal);
 
-  final hGlobal = GlobalAlloc(
-    0x0002 /* GMEM_MOVEABLE */,
-    textToCopy.length * 2 + 2,
-  );
-  final lpData = GlobalLock(hGlobal).cast<Utf16>();
-  if (lpData == nullptr) {
-    return;
+    return true;
   }
 
-  lpData.setString(textToCopy);
+  String? readStringForFormat(Format format) {
+    String? result;
+    if (OpenClipboard(NULL) != 0) {
+      if (IsClipboardFormatAvailable(CF_TEXT) != 0) {
+        final hData = GetClipboardData(CF_TEXT);
+        if (hData != NULL) {
+          final lpData = GlobalLock(Pointer.fromAddress(hData));
+          if (lpData != nullptr) {
+            final text = lpData.cast<Utf8>().toDartString();
+            result = text;
+            GlobalUnlock(Pointer.fromAddress(hData));
+          }
+        }
+      }
 
-
-  GlobalUnlock(hGlobal);
-
-  if (OpenClipboard(NULL) != 0) {
-    EmptyClipboard();
-    SetClipboardData(CF_UNICODETEXT, hGlobal.address);
-    CloseClipboard();
+      CloseClipboard();
+    }
+    return result;
   }
 
-  GlobalFree(hGlobal);
-}
+  @override
+  bool writeString(String string) {
+    try {
+      return writeStringForFormat(string, Format.text);
+    } catch (e) {
+      return false;
+    }
+  }
 
-class PasteboardWindows {
-  void writeString() {}
+  @override
+  String? readString() {
+    return readStringForFormat(Format.text);
+  }
 }

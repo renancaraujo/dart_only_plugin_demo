@@ -1,20 +1,13 @@
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
-enum Formats {
-  text(CF_TEXT),
-  unicodeText(CF_UNICODETEXT),
-  bitmap(CF_BITMAP),
-  metafilePict(CF_METAFILEPICT),
-  syLK(CF_SYLK),
-  dIF(CF_DIF),
-  tIFF(CF_TIFF),
-  dIB(CF_DIB),
-  palette(CF_PALETTE),
-  penData(CF_PENDATA),
-  rIFF(CF_RIFF),
-  wave(CF_WAVE),;
+final _htmlFormat = RegisterClipboardFormat('HTML Format'.toNativeUtf16());
 
-  const Formats(this.value);
+final class Format {
+
+  Format._(this.value);
+  static final text = Format._(CF_UNICODETEXT);
+  static final html = Format._(_htmlFormat);
 
   final int value;
 }

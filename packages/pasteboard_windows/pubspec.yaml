@@ -1,4 +1,4 @@
-name: pasteboard_macos
+name: pasteboard_windows
 description: A clipboard example using the ffi
 version: 0.0.0
 publish_to: none
@@ -7,8 +7,10 @@ environment:
   sdk: ^3.0.2
 
 dependencies:
+  ffi: ^2.0.2
+  pasteboard_interface:
+    path: ../pasteboard_interface
   win32: ^5.0.3
-
 
 dev_dependencies:
   very_good_analysis: ^5.0.0+1

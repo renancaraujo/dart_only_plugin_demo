@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  pasteboard_macos:
-    path: packages/pasteboard_macos
+  pasteboard:
+    path: packages/pasteboard
 
 dev_dependencies:
   flutter_test:

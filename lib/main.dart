@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pasteboard_macos/pasteboard_macos.dart';
+import 'package:pasteboard/pasteboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late final TextEditingController controller = TextEditingController();
 
-  late final pasteboard = PasteboardMacos.general;
+  late final pasteboard = getPasteboard();
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       textToCopy = controller.text;
     }
 
-    final result = pasteboard.writeString(textToCopy, PasteboardType.string);
+    final result = pasteboard.writeString(textToCopy);
 
     setState(() {
       prompt = result ? 'Copied "$textToCopy"!' : 'Failed to copy!';
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void handlePaste() {
-    final text = pasteboard.readString(PasteboardType.string);
+    final text = pasteboard.readString();
 
     if (text == null) {
       setState(() {

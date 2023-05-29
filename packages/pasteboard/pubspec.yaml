@@ -1,0 +1,18 @@
+name: pasteboard
+description: A proxy package to proxy calls to windows and macos implementations of pasteboard.
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.0.2
+
+dependencies:
+  pasteboard_interface:
+    path: ../pasteboard_interface
+  pasteboard_macos:
+    path: ../pasteboard_macos
+  pasteboard_windows:
+    path: ../pasteboard_windows
+
+dev_dependencies:
+  very_good_analysis: ^5.0.0+1

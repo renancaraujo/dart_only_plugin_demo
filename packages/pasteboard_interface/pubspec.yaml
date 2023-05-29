@@ -1,0 +1,10 @@
+name: pasteboard_interface
+description: A interface package define a comon interface windows and macos implementations of pasteboard.
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.0.2
+
+dev_dependencies:
+  very_good_analysis: ^5.0.0+1
