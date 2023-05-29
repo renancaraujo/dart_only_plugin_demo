@@ -1,0 +1,16 @@
+name: pasteboard_macos
+description: A clipboard example using the ffi
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.0.2
+
+dependencies:
+  appkit_bindings:
+    path: ../appkit_bindings
+  pasteboard_interface:
+    path: ../pasteboard_interface
+
+dev_dependencies:
+  very_good_analysis: ^5.0.0+1
