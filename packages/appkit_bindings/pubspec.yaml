@@ -1,0 +1,16 @@
+name: appkit_bindings
+description: Generated bindings for the appkit library.
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.0.2
+
+dependencies:
+  ffi: ^2.0.2
+
+dev_dependencies:
+  args: ^2.4.1
+  ffigen: ^8.0.2
+  path: ^1.8.3
+  very_good_analysis: ^5.0.0+1
