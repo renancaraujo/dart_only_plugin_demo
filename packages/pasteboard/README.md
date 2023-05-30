@@ -1,6 +1,5 @@
-# Pasteboard macos
+# Pasteboard pLUGIN
 
-A plugin for the Pastebord API (NSPasteboard) for flutter and Dart macos apps.
+A Federated dart-only plugin to handle desktop clipboard. 
 
-This was created to show the capability of having access to native APIs from Dart and Flutter
-without having to write platform channels.
+Also, it totally independent of flutter. So anyone could use this on dart CLIs too.

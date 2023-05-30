@@ -65,6 +65,20 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void handleCopyHtml() {
+    var textToCopy = controller.selection.textInside(controller.text);
+    if (textToCopy.isEmpty) {
+      textToCopy = controller.text;
+    }
+
+    final result = pasteboard.writeHtml("<b>$textToCopy</b>");
+
+    setState(() {
+      prompt = result ? 'Copied "$textToCopy" as HTML!' : 'Failed to copy!';
+    });
+  }
+
+
   void handlePaste() {
     final text = pasteboard.readString();
 
@@ -111,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: handleCopy,
+                    onPressed: handleCopyHtml,
                     child: const Text('Copy'),
                   ),
                   ElevatedButton(

@@ -44,4 +44,13 @@ class PasteboardMacos implements PasteboardInterface {
   String? readString() {
     return readStringForType(PasteboardType.string);
   }
+
+  @override
+  bool writeHtml(String htmlBody) {
+    try {
+      return writeStringForType(htmlBody, PasteboardType.html);
+    } catch (e) {
+      return false;
+    }
+  }
 }
