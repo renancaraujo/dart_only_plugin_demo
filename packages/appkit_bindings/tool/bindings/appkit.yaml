@@ -3,19 +3,6 @@ language: objc
 output: '../../lib/src/appkit_bindings.dart'
 exclude-all-by-default: true
 description: Bindings for AppKit.
-objc-interfaces:
-  include:
-    - 'NSApplication'
-    - 'NSMenu'
-    - 'NSMenuItem'
-    - 'NSWindow'
-    - 'NSMakeRect'
-    - 'NSPasteboard'
-  exclude:
-    - 'NSOperationQueue'
-    - 'CG.*'
-    - 'CGColor.*'
 headers:
   entry-points:
-#    - /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/AppKit.h
-    - /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSApplication.h
+    - /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/AppKit.h

@@ -22,7 +22,6 @@ class PasteboardWindows implements PasteboardInterface {
     GlobalUnlock(hGlobal);
 
     if (OpenClipboard(NULL) != 0) {
-      EmptyClipboard();
       SetClipboardData(format.value, hGlobal.address);
       CloseClipboard();
     }
@@ -75,6 +74,14 @@ class PasteboardWindows implements PasteboardInterface {
       );
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  void clearContents() {
+    if (OpenClipboard(NULL) != 0) {
+      EmptyClipboard();
+      CloseClipboard();
     }
   }
 }

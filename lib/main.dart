@@ -8,23 +8,27 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Pasteboard demo',
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: const ColorScheme.dark(primary: Colors.purple),
         useMaterial3: true,
+        inputDecorationTheme: const InputDecorationTheme(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Pasteboard demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    required this.title,
+    super.key,
+  });
 
   final String title;
 
@@ -35,49 +39,38 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String prompt = '';
 
-  late final TextEditingController controller = TextEditingController();
+  late final TextEditingController textEditingController =
+      TextEditingController();
 
   late final pasteboard = getPasteboard();
 
   @override
-  void initState() {
-    super.initState();
-    controller.value =
-        const TextEditingValue(text: 'Type text to be copied here');
-  }
-
-  @override
   void dispose() {
     super.dispose();
-    controller.dispose();
-  }
-
-  void handleCopy() {
-    var textToCopy = controller.selection.textInside(controller.text);
-    if (textToCopy.isEmpty) {
-      textToCopy = controller.text;
-    }
-
-    final result = pasteboard.writeString(textToCopy);
-
-    setState(() {
-      prompt = result ? 'Copied "$textToCopy"!' : 'Failed to copy!';
-    });
+    textEditingController.dispose();
   }
 
   void handleCopyHtml() {
-    var textToCopy = controller.selection.textInside(controller.text);
+    final textToCopy = textEditingController.selectedText;
+
     if (textToCopy.isEmpty) {
-      textToCopy = controller.text;
+      return;
     }
 
-    final result = pasteboard.writeHtml("<b>$textToCopy</b>");
+    if (textToCopy.isEmpty) {
+      return;
+    }
+
+    pasteboard.clearContents();
+    final result = pasteboard.writeHtml(
+      '<b><i>$textToCopy</i></b>',
+    );
+    pasteboard.writeString(textToCopy);
 
     setState(() {
       prompt = result ? 'Copied "$textToCopy" as HTML!' : 'Failed to copy!';
     });
   }
-
 
   void handlePaste() {
     final text = pasteboard.readString();
@@ -89,16 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
 
-    controller.value = controller.value.copyWith(
-      text: controller.text.replaceRange(
-        controller.selection.start,
-        controller.selection.end,
-        text,
-      ),
-      selection: TextSelection.collapsed(
-        offset: controller.selection.start + text.length,
-      ),
-    );
+    textEditingController.pasteString(text);
 
     setState(() {
       prompt = 'Pasted "$text"!';
@@ -108,42 +92,77 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextField(
-                controller: controller,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: TextField(
+                autofocus: true,
+                controller: textEditingController,
                 textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  hintText: 'Type here',
+                ),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: handleCopyHtml,
-                    child: const Text('Copy'),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: handleCopyHtml,
+                  child: const Text(
+                    'Copy with formatting',
+                    style: TextStyle(fontSize: 20),
                   ),
-                  ElevatedButton(
-                    onPressed: handlePaste,
-                    child: const Text('Paste'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: handlePaste,
+                  child: const Text(
+                    'Paste',
+                    style: TextStyle(fontSize: 20),
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                prompt,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              prompt,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+extension on TextEditingController {
+  String get selectedText {
+    var textToCopy = selection.textInside(text);
+    if (textToCopy.isEmpty) {
+      textToCopy = text;
+    }
+    return textToCopy;
+  }
+
+  void pasteString(String text) {
+    value = value.copyWith(
+      text: this.text.replaceRange(
+            selection.start,
+            selection.end,
+            text,
+          ),
+      selection: TextSelection.collapsed(
+        offset: selection.start + text.length,
       ),
     );
   }

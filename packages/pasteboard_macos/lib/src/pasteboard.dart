@@ -15,13 +15,13 @@ class PasteboardMacos implements PasteboardInterface {
 
   final NSPasteboard nsPasteboard;
 
+  @override
   void clearContents() {
     nsPasteboard.clearContents();
   }
 
   bool writeStringForType(String string, PasteboardType type) {
     final str = NSString(appKitLib, string);
-    clearContents();
     return nsPasteboard.setString_forType_(str, type.getNSString(appKitLib));
   }
 
