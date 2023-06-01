@@ -2,6 +2,10 @@
 
 Hello there, this is a demonstration of how to use alternative ways to access native APIs in Flutter (or any dart application for that matter, including CLIs).
 
+
+https://github.com/renancaraujo/dart_only_plugin_demo/assets/6718144/3abfab4b-ece6-43e8-bf34-17544c1e0c37
+
+
 ### What this repo includes
 
 This repo includes:
